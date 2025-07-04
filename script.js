@@ -2,6 +2,7 @@ const video1 = document.getElementById('video1');
 const video2 = document.getElementById('video2');
 const leftArrow = document.getElementById('left-arrow');
 const rightArrow = document.getElementById('right-arrow');
+const actionButton = document.getElementById('action-button');
 
 let currentVideoElement = video1;
 let nextVideoElement = video2;
@@ -20,6 +21,10 @@ function updateArrows() {
   rightArrow.hidden = (currentVideo >= totalVideos && !isReversed);
 }
 
+function updateActionButton() {
+  const shouldShow = !isReversed && currentVideo >= 3 && currentVideo <= 7 && currentVideoElement.paused;
+  actionButton.hidden = !shouldShow;
+}
 
 function loadAndPlayVideo(index, reversed = false) {
   const baseName = reversed ? `VideoReversed${index}` : `Video${index}`;
@@ -46,10 +51,16 @@ function loadAndPlayVideo(index, reversed = false) {
         rightArrow.hidden = true;
         setTimeout(() => {
           updateArrows();
+          updateActionButton();
         }, 5800);
       } else {
         updateArrows();
+        updateActionButton();
       }
+
+      // Réécouter les events à chaque changement
+      currentVideoElement.onpause = updateActionButton;
+      currentVideoElement.onplay = () => { actionButton.hidden = true; };
     }
   };
 
@@ -59,7 +70,6 @@ function loadAndPlayVideo(index, reversed = false) {
     }
   };
 }
-
 
 leftArrow.addEventListener('click', () => {
   if (isReversed) {
@@ -81,6 +91,14 @@ rightArrow.addEventListener('click', () => {
   }
 });
 
-currentVideoElement.addEventListener('ended', updateArrows);
+actionButton.addEventListener('click', () => {
+  const specialVideo = currentVideo + 5; // 3 ➜ 8, 4 ➜ 9, etc.
+  loadAndPlayVideo(specialVideo, false);
+});
+
+currentVideoElement.addEventListener('ended', () => {
+  updateArrows();
+  updateActionButton();
+});
 
 loadAndPlayVideo(currentVideo);
