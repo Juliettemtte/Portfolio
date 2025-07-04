@@ -1,22 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Site</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Lecteur Vidéo Séquentiel</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="video-container">
-    <video id="intro-video" autoplay muted playsinline>
-      <source src="video/intro.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
+  <div class="video-container">
+    <video id="video1" class="video active" autoplay muted playsinline preload="auto"></video>
+    <video id="video2" class="video" autoplay muted playsinline preload="auto"></video>
+	
+	<button id="left-arrow" class="arrow left" hidden>
+	<svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+		<path d="M15 6l-6 6 6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+	</svg>
+	</button>
 
-  <div id="background-image"></div>
+	<button id="right-arrow" class="arrow right" hidden>
+	<svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+		<path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+	</svg>
+	</button>
+
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
