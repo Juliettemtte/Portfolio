@@ -73,6 +73,49 @@ html {
 	background-color: rgba(255, 255, 255, 0.15);
 }
 
+#back-button {
+	position: absolute;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(255, 255, 255, 0.1);
+	color: white;
+	border: none;
+	border-radius: 20px;
+	padding: 10px 20px;
+	font-size: 1rem;
+	cursor: pointer;
+	z-index: 2;
+	transition: background-color 0.3s;
+}
+
+#back-button:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+#overlay-video-container {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40vw;  /* adapte la taille au ratio voulu */
+  aspect-ratio: 16 / 9;
+  pointer-events: none;
+  z-index: 10;
+  display: block;
+}
+
+#overlay-video-container[hidden] {
+  display: none;
+}
+
+#overlay-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
 .left {
 	left: 20px;
 }
