@@ -10,32 +10,30 @@
     <div class="relative-wrapper">
       <video id="video1" class="video active" autoplay muted playsinline preload="auto"></video>
       <video id="video2" class="video" autoplay muted playsinline preload="auto"></video>
-
-      <div id="title" class="title" hidden>
-        Build Your Own Shell (Minishell)
-      </div>
     </div>
-	<button id="left-arrow" class="arrow left" hidden>
-	<svg width="24" height="24" fill="white" viewBox="0 0 24 24">
-		<path d="M15 6l-6 6 6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-	</svg>
-	</button>
 
-	<button id="right-arrow" class="arrow right" hidden>
-	<svg width="24" height="24" fill="white" viewBox="0 0 24 24">
-		<path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-	</svg>
-	</button>
+    <button id="left-arrow" class="arrow left" hidden>
+      <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+        <path d="M15 6l-6 6 6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
 
-	<button id="action-button" class="action-button" hidden>▶</button>
-	<button id="back-button" hidden>↩️</button>
+    <button id="right-arrow" class="arrow right" hidden>
+      <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+        <path d="M9 6l6 6-6 6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
 
-	<div id="overlay-video-container" hidden>
+    <button id="action-button" class="action-button" hidden>▶</button>
+    <button id="back-button" class="back-button" hidden>↩️</button>
+
+    <div id="overlay-video-container" hidden>
       <video id="overlay-video" muted loop playsinline></video>
     </div>
-	
   </div>
 
-  <script src="script.js"></script>
+  <!-- Modular JS -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
+

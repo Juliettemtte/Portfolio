@@ -1,5 +1,6 @@
-body,
-html {
+/* === Base Layout === */
+html,
+body {
 	margin: 0;
 	padding: 0;
 	background: black;
@@ -7,23 +8,26 @@ html {
 	height: 100%;
 }
 
+/* === Video Container === */
 .video-container {
-	aspect-ratio: 16 / 9;
+	position: relative;
 	width: 100vw;
 	max-height: 100vh;
+	aspect-ratio: 16 / 9;
 	margin: auto;
-	position: relative;
 	background: black;
 }
 
+/* === Main Videos === */
 .video {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
 	background: black;
-	position: absolute;
-	top: 0;
-	left: 0;
+	z-index: 0;
 }
 
 .video.active {
@@ -31,6 +35,30 @@ html {
 	z-index: 1;
 }
 
+/* === Overlay Video === */
+#overlay-video-container {
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40vw;
+	aspect-ratio: 16 / 9;
+	pointer-events: none;
+	z-index: 10;
+	display: block;
+}
+
+#overlay-video-container[hidden] {
+	display: none;
+}
+
+#overlay-video {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+/* === Arrows (Navigation Buttons) === */
 .arrow {
 	position: absolute;
 	top: 50%;
@@ -43,6 +71,7 @@ html {
 	padding: 0.75rem;
 	cursor: pointer;
 	z-index: 2;
+	transition: background-color 0.3s, transform 0.2s;
 }
 
 .arrow:hover {
@@ -50,17 +79,25 @@ html {
 	transform: translateY(-50%) scale(1.1);
 }
 
+.left {
+	left: 20px;
+}
+
+.right {
+	right: 20px;
+}
+
+/* === Action Button (▶ Button) === */
 .action-button {
 	position: absolute;
-	bottom: 50px;
-	left: 50%;
-	transform: translateX(-50%);
-	padding: 0.7rem 1.5rem;
-	font-size: 1.1rem;
+	bottom: 49%;
+	left: 37%;
+	padding: 0.4rem 0.9rem;
+	font-size: 0.5rem;
 	color: white;
 	background: rgba(0, 0, 0, 0.6);
 	border: 2px solid white;
-	border-radius: 10px;
+	border-radius: 6px;
 	cursor: pointer;
 	z-index: 2;
 	transition: background-color 0.3s ease;
@@ -70,6 +107,7 @@ html {
 	background-color: rgba(255, 255, 255, 0.15);
 }
 
+/* === Back Button (↩️ Button) === */
 #back-button {
 	position: absolute;
 	bottom: 30px;
@@ -88,66 +126,4 @@ html {
 
 #back-button:hover {
 	background: rgba(255, 255, 255, 0.3);
-}
-
-#overlay-video-container {
-	position: absolute;
-	top: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 40vw; /* adapte la taille au ratio voulu */
-	aspect-ratio: 16 / 9;
-	pointer-events: none;
-	z-index: 10;
-	display: block;
-}
-
-#overlay-video-container[hidden] {
-	display: none;
-}
-
-#overlay-video {
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-}
-
-.left {
-	left: 20px;
-}
-
-.right {
-	right: 20px;
-}
-
-.relative-wrapper {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-#title {
-	position: absolute;
-	top: 28.8%;
-	left: 59.2%;
-	transform: translate(-50%, -50%) rotateX(40deg) skewX(-10deg);
-	font-size: 0.93vw;
-	font-family: 'Times New Roman', Times, serif;
-	letter-spacing: -0.001em;
-	color: #282626;
-	z-index: 3;
-	pointer-events: none;
-}
-
-#1st-line {
-	position: absolute;
-	top: 28.8%;
-	left: 59.2%;
-	transform: translate(-50%, -50%) rotateX(40deg) skewX(-10deg);
-	font-size: 0.93vw;
-	font-family: 'Times New Roman', Times, serif;
-	letter-spacing: -0.001em;
-	color: #282626;
-	z-index: 3;
-	pointer-events: none;
 }
