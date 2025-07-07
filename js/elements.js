@@ -1,4 +1,3 @@
-// DOM Elements
 export const video1 = document.getElementById('video1');
 export const video2 = document.getElementById('video2');
 export const leftArrow = document.getElementById('left-arrow');

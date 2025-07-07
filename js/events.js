@@ -1,47 +1,62 @@
-import { leftArrow, rightArrow, actionButton, backButton } from './elements.js';
-import { currentVideo, isReversed, isSpecial, currentVideoElement, previousVideoData } from './state.js';
-import { loadAndPlayVideo } from './videoLoader.js';
+import { state } from './state.js';
+import { leftArrow, rightArrow, actionButton, backButton, overlayVideo, overlayContainer } from './elements.js';
+import { loadAndPlayVideo } from './navigation.js';
+import { updateArrows, updateActionButton, updateBackButton } from './ui.js';
+import { updateOverlayVideo } from './overlay.js';
 
 leftArrow.addEventListener('click', () => {
-  if (isSpecial) return;
-  if (isReversed && currentVideo > 1) {
-    loadAndPlayVideo(currentVideo - 1, true);
+  if (state.isSpecial) return;
+  if (state.isReversed) {
+    if (state.currentVideo > 1) {
+      loadAndPlayVideo(state.currentVideo - 1, true);
+    }
   } else {
-    loadAndPlayVideo(currentVideo, true);
+    loadAndPlayVideo(state.currentVideo, true);
   }
 });
 
 rightArrow.addEventListener('click', () => {
-  if (isSpecial) return;
-  if (isReversed) {
-    loadAndPlayVideo(currentVideo, false);
-  } else if (currentVideo < 7) {
-    loadAndPlayVideo(currentVideo + 1, false);
+  if (state.isSpecial) return;
+  if (state.isReversed) {
+    loadAndPlayVideo(state.currentVideo, false);
+  } else if (state.currentVideo < state.totalVideos) {
+    loadAndPlayVideo(state.currentVideo + 1, false);
   }
 });
 
 actionButton.addEventListener('click', () => {
-  if (!isSpecial) {
-    previousVideoData = {
-      index: currentVideo,
-      reversed: isReversed,
-      special: isSpecial,
-      time: currentVideoElement.currentTime,
-      paused: currentVideoElement.paused
+  if (!state.isSpecial) {
+    state.previousVideoData = {
+      index: state.currentVideo,
+      reversed: state.isReversed,
+      special: state.isSpecial,
+      time: state.currentVideoElement.currentTime,
+      paused: state.currentVideoElement.paused
     };
-    const specialVideo = currentVideo + 5;
+    const specialVideo = state.currentVideo + 5;
     loadAndPlayVideo(specialVideo, false, true);
   } else {
-    const reversedIndex = parseInt(currentVideoElement.src.match(/(\d+)\.mp4$/)?.[1]);
-    if (reversedIndex) {
+    const match = state.currentVideoElement.src.match(/(\d+)\.mp4$/);
+    if (match) {
+      const reversedIndex = parseInt(match[1]);
       loadAndPlayVideo(reversedIndex, true, true);
     }
   }
 });
 
 backButton.addEventListener('click', () => {
-  if (!previousVideoData) return;
-  const { index, reversed, special, time, paused } = previousVideoData;
-  previousVideoData = null;
+  if (!state.previousVideoData) return;
+
+  const { index, reversed, special, time, paused } = state.previousVideoData;
+  state.previousVideoData = null;
   loadAndPlayVideo(index, reversed, special, time, paused);
 });
+
+export function setupEvents() {
+  state.currentVideoElement.addEventListener('ended', () => {
+    updateArrows();
+    updateActionButton();
+    updateBackButton();
+    updateOverlayVideo();
+  });
+}
