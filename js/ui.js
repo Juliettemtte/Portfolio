@@ -17,10 +17,11 @@ export function updateActionButton() {
     return;
   }
 
+  const minVideo = state.lastDirection === 'left' ? 4 : 3;
   const maxVideo = state.lastDirection === 'left' ? 7 : 6;
 
   const shouldShow =
-    state.currentVideo >= 3 &&
+    state.currentVideo >= minVideo &&
     state.currentVideo <= maxVideo &&
     state.currentVideoElement.paused;
 
