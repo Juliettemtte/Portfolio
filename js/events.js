@@ -6,6 +6,7 @@ import { updateOverlayVideo } from './overlay.js';
 
 leftArrow.addEventListener('click', () => {
   if (state.isSpecial) return;
+  state.lastDirection = 'left';
   if (state.isReversed) {
     if (state.currentVideo > 1) {
       loadAndPlayVideo(state.currentVideo - 1, true);
@@ -17,6 +18,7 @@ leftArrow.addEventListener('click', () => {
 
 rightArrow.addEventListener('click', () => {
   if (state.isSpecial) return;
+  state.lastDirection = 'right';
   if (state.isReversed) {
     loadAndPlayVideo(state.currentVideo, false);
   } else if (state.currentVideo < state.totalVideos) {
@@ -33,7 +35,11 @@ actionButton.addEventListener('click', () => {
       time: state.currentVideoElement.currentTime,
       paused: state.currentVideoElement.paused
     };
-    const specialVideo = state.currentVideo + 5;
+
+    // Choisir +4 ou +5 selon la dernière direction
+    const offset = state.lastDirection === 'left' ? 4 : 5;
+    const specialVideo = state.currentVideo + offset;
+
     loadAndPlayVideo(specialVideo, false, true);
   } else {
     const match = state.currentVideoElement.src.match(/(\d+)\.mp4$/);
@@ -43,6 +49,7 @@ actionButton.addEventListener('click', () => {
     }
   }
 });
+
 
 backButton.addEventListener('click', () => {
   if (!state.previousVideoData) return;

@@ -6,6 +6,7 @@ export const state = {
   isReversed: false,
   isSpecial: false,
   previousVideoData: null,
+  lastDirection: 'right',
   overlayVideos: {
     3: 'OverlayA.mp4',
     4: 'Cub3D.mp4',

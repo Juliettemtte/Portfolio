@@ -12,15 +12,21 @@ export function updateArrows() {
 }
 
 export function updateActionButton() {
+  if (state.isSpecial) {
+    actionButton.hidden = true;
+    return;
+  }
+
+  const maxVideo = state.lastDirection === 'left' ? 7 : 6;
+
   const shouldShow =
-    !state.isReversed &&
-    !state.isSpecial &&
     state.currentVideo >= 3 &&
-    state.currentVideo <= 7 &&
+    state.currentVideo <= maxVideo &&
     state.currentVideoElement.paused;
 
   actionButton.hidden = !shouldShow;
 }
+
 
 export function updateBackButton() {
   backButton.hidden = !state.previousVideoData;
