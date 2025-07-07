@@ -6,6 +6,7 @@ const actionButton = document.getElementById('action-button');
 const backButton = document.getElementById('back-button');
 const overlayContainer = document.getElementById('overlay-video-container');
 const overlayVideo = document.getElementById('overlay-video');
+const title = document.getElementById('title');
 
 let currentVideoElement = video1;
 let nextVideoElement = video2;
@@ -142,6 +143,7 @@ function loadAndPlayVideo(index, reversed = false, special = false, resumeTime =
         updateActionButton();
         updateBackButton();
         updateOverlayVideo();
+		title.hidden = false;
       };
 
       currentVideoElement.onplay = () => {
@@ -150,6 +152,7 @@ function loadAndPlayVideo(index, reversed = false, special = false, resumeTime =
         overlayVideo.pause();
         overlayVideo.src = '';
         overlayContainer.hidden = true;
+		title.hidden = true;
       };
     }
   };

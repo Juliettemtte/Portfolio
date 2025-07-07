@@ -94,27 +94,26 @@ html {
 }
 
 #overlay-video-container {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40vw;  /* adapte la taille au ratio voulu */
-  aspect-ratio: 16 / 9;
-  pointer-events: none;
-  z-index: 10;
-  display: block;
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40vw; /* adapte la taille au ratio voulu */
+	aspect-ratio: 16 / 9;
+	pointer-events: none;
+	z-index: 10;
+	display: block;
 }
 
 #overlay-video-container[hidden] {
-  display: none;
+	display: none;
 }
 
 #overlay-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
-
 
 .left {
 	left: 20px;
@@ -122,4 +121,18 @@ html {
 
 .right {
 	right: 20px;
+}
+
+#title {
+	position: absolute;
+	top: 36.3%;
+	left: 60%;
+	transform: translateX(-50%) rotateX(60deg);
+	perspective: 900px;
+	font-size: 0.9rem;
+	padding: 1rem 0.5rem;
+	background: transparent;
+	color: black;
+	pointer-events: none;
+	z-index: 3;
 }
