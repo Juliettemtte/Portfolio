@@ -8,25 +8,22 @@ html {
 }
 
 .video-container {
-	position: relative;
-	width: 1920px;
-	height: 1080px;
-	margin: auto;
+	aspect-ratio: 16 / 9;
 	width: 100vw;
-	height: 100vh;
-	overflow: hidden;
+	max-height: 100vh;
+	margin: auto;
+	position: relative;
 	background: black;
 }
 
 .video {
-	position: absolute;
-	inset: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
 	background: black;
-	opacity: 0;
-	z-index: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 .video.active {
@@ -123,16 +120,34 @@ html {
 	right: 20px;
 }
 
+.relative-wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
 #title {
 	position: absolute;
-	top: 36.3%;
-	left: 60%;
-	transform: translateX(-50%) rotateX(60deg);
-	perspective: 900px;
-	font-size: 0.9rem;
-	padding: 1rem 0.5rem;
-	background: transparent;
-	color: black;
-	pointer-events: none;
+	top: 28.8%;
+	left: 59.2%;
+	transform: translate(-50%, -50%) rotateX(40deg) skewX(-10deg);
+	font-size: 0.93vw;
+	font-family: 'Times New Roman', Times, serif;
+	letter-spacing: -0.001em;
+	color: #282626;
 	z-index: 3;
+	pointer-events: none;
+}
+
+#1st-line {
+	position: absolute;
+	top: 28.8%;
+	left: 59.2%;
+	transform: translate(-50%, -50%) rotateX(40deg) skewX(-10deg);
+	font-size: 0.93vw;
+	font-family: 'Times New Roman', Times, serif;
+	letter-spacing: -0.001em;
+	color: #282626;
+	z-index: 3;
+	pointer-events: none;
 }
