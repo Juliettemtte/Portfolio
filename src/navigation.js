@@ -97,12 +97,11 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
 }
 
 function showEndingImage() {
-  const match = state.lastVideoSrc.match(/Videos\/(video)(\d+)(?:-\w+)?\.mp4$/);
-  if (match) {
-    const baseName = match[1];
-    const number = match[2];
-    endingImage.src = `Images/${baseName}${number}.png`;
-    endingImage.style.opacity = '1';
-    state.currentVideoElement.style.opacity = '0.3';
-  }
+  const videoNumber = state.isSpecial ? 
+    (state.lastDirection === 'left' ? state.currentVideo - 4 : state.currentVideo - 5) 
+    : state.currentVideo;
+  
+  endingImage.src = `Images/video${videoNumber}.png`;
+  endingImage.style.opacity = '1';
+  state.currentVideoElement.style.opacity = '0.3';
 }
