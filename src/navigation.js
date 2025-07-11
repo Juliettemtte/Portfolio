@@ -97,11 +97,18 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
 }
 
 function showEndingImage() {
-  const videoNumber = state.isSpecial ? 
-    (state.lastDirection === 'left' ? state.currentVideo - 4 : state.currentVideo - 5) 
-    : state.currentVideo;
+  let imageName;
   
-  endingImage.src = `Images/Video${videoNumber}.png`;
+  if (state.isSpecial) {
+    const specialOffset = state.lastDirection === 'left' ? 4 : 5;
+    imageName = `Video${state.currentVideo - specialOffset}-Special`;
+  } else if (state.isReversed) {
+    imageName = `VideoReversed${state.currentVideo}`;
+  } else {
+    imageName = `Video${state.currentVideo}`;
+  }
+  
+  endingImage.src = `Images/${imageName}.png`;
   endingImage.style.opacity = '1';
   state.currentVideoElement.style.opacity = '0.3';
 }
