@@ -1,9 +1,12 @@
+// navigation.js
+
 import { state, swapVideoElements } from './state.js';
-import { getVideoSrc } from './utils.js';
+import { getVideoSrc, getOverlayVideoSrc } from './utils.js';
 import { updateActionButton, updateArrows, updateBackButton } from './ui.js';
 import { updateOverlayVideo } from './overlay.js';
 import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
 import { endingTexts } from './text-content.js';
+import { preloadMedia } from './preloader.js';
 
 const PRELOAD_IMAGE_SECONDS = 0.5;
 let endingContentVisible = false;
@@ -25,7 +28,7 @@ function showEndingContent() {
   const videoPath = state.currentVideoElement.src;
   const videoKey = videoPath.split('/').pop().replace('.mp4', '').replace(/-/g, '').toLowerCase();
 
-  endingImage.src = `Images/${getImageName(videoKey)}.png?t=${Date.now()}`;
+  endingImage.src = `Images/${getImageNameFromIndex(state.currentVideo, state.isReversed, state.isSpecial)}.png?t=${Date.now()}`;
   endingImage.onload = () => {
     endingImage.style.opacity = '1';
     state.currentVideoElement.style.opacity = '0.3';
@@ -66,13 +69,10 @@ function hideEndingContent() {
   endingContentVisible = false;
 }
 
-function getImageName(videoKey) {
-  if (state.isReversed) return `VideoReversed${state.currentVideo}`;
-  if (state.isSpecial) {
-    const specialOffset = state.lastDirection === 'left' ? 4 : 5;
-    return `Video${state.currentVideo - specialOffset}-Special`;
-  }
-  return `Video${state.currentVideo}`;
+function getImageNameFromIndex(index, reversed, special) {
+  if (reversed) return `VideoReversed${index}`;
+  if (special) return `Video${index}-Special`;
+  return `Video${index}`;
 }
 
 function getTextKey(videoKey) {
@@ -81,12 +81,18 @@ function getTextKey(videoKey) {
   return `video${state.currentVideo}`;
 }
 
-export function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
+export async function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
   const newSrc = getVideoSrc(index, reversed, special);
+  const newImage = `Images/${getImageNameFromIndex(index, reversed, special)}.png`;
+  const overlaySrc = getOverlayVideoSrc(index);
+
+  // Précharge
+  await preloadMedia(newSrc, newImage, overlaySrc);
+
   state.nextVideoElement.src = newSrc;
   state.lastVideoSrc = newSrc;
 
-  if (!resumePaused || (!reversed && !special)) {
+  if (!resumePaused || (!state.isReversed && !state.isSpecial)) {
     hideEndingContent();
     endingImage.src = '';
   }
@@ -102,19 +108,14 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     };
 
     state.nextVideoElement.onpause = () => {
-      const nearEnd = state.nextVideoElement.duration &&
-        state.nextVideoElement.currentTime >= state.nextVideoElement.duration - PRELOAD_IMAGE_SECONDS;
-      if (nearEnd) {
-        showEndingContent();
+      if (resumePaused && resumeTime !== null) {
+        const nearEnd = state.nextVideoElement.duration &&
+                        resumeTime >= state.nextVideoElement.duration - PRELOAD_IMAGE_SECONDS;
+        if (nearEnd) {
+          showEndingContent();
+        }
       }
     };
-
-    const isNearEnd = state.nextVideoElement.duration &&
-      state.nextVideoElement.currentTime >= state.nextVideoElement.duration - PRELOAD_IMAGE_SECONDS;
-
-    if ((resumePaused || reversed || special) && isNearEnd) {
-      showEndingContent();
-    }
 
     if (resumePaused) {
       state.nextVideoElement.pause();
@@ -140,7 +141,6 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     };
   };
 }
-
 
 function updateUIElements() {
   updateArrows();
