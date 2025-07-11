@@ -6,7 +6,7 @@ import { updateOverlayVideo } from './overlay.js';
 import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
 import { endingTexts } from './text-content.js';
 
-const PRELOAD_IMAGE_SECONDS = 0.5;
+const PRELOAD_IMAGE_SECONDS = 2;
 let endingContentVisible = false;
 
 function setupEndingImageOverlay() {
