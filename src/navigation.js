@@ -6,7 +6,7 @@ import { updateOverlayVideo } from './overlay.js';
 import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
 import { endingTexts } from './text-content.js';
 
-const PRELOAD_IMAGE_SECONDS = 2;
+const PRELOAD_IMAGE_SECONDS = 1;
 let endingContentVisible = false;
 
 function setupEndingImageOverlay() {
@@ -27,11 +27,18 @@ function showEndingContent() {
   const videoKey = videoPath.split('/').pop().replace('.mp4', '').replace(/-/g, '').toLowerCase();
 
   endingImage.src = `Images/${getImageName(videoKey)}.png?t=${Date.now()}`;
+  if (endingImage.complete) {
+  endingImage.style.opacity = '1';
+  state.currentVideoElement.style.opacity = '0.3';
+  showEndingText(videoKey);
+} else {
   endingImage.onload = () => {
     endingImage.style.opacity = '1';
     state.currentVideoElement.style.opacity = '0.3';
     showEndingText(videoKey);
   };
+}
+
 }
 
 function showEndingText(videoKey) {
