@@ -101,7 +101,7 @@ function showEndingImage() {
     (state.lastDirection === 'left' ? state.currentVideo - 4 : state.currentVideo - 5) 
     : state.currentVideo;
   
-  endingImage.src = `Images/video${videoNumber}.png`;
+  endingImage.src = `Images/Video${videoNumber}.png`;
   endingImage.style.opacity = '1';
   state.currentVideoElement.style.opacity = '0.3';
 }
