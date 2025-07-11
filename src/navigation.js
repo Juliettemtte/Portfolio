@@ -28,8 +28,8 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
   state.lastVideoSrc = newSrc;
 
   endingImage.style.opacity = '0';
+  endingImage.src = '';
   state.nextVideoElement.style.opacity = '1';
-
   state.nextVideoElement.load();
 
   state.nextVideoElement.onloadeddata = () => {
@@ -100,9 +100,10 @@ function showEndingImage() {
   const match = state.lastVideoSrc.match(/Videos\/([^\.]+)\.mp4$/);
   if (match) {
     const imageName = match[1];
-    endingImage.src = `Images/${imageName}.png`;
-
+    if (!endingImage.src.includes(imageName)) {
+      endingImage.src = `Images/${imageName}.png`;
+    }
     endingImage.style.opacity = '1';
-    state.currentVideoElement.style.opacity = '0';
+    state.currentVideoElement.style.opacity = '0.3';
   }
 }
