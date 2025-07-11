@@ -1,12 +1,10 @@
 // navigation.js
-
 import { state, swapVideoElements } from './state.js';
-import { getVideoSrc, getOverlayVideoSrc } from './utils.js';
+import { getVideoSrc } from './utils.js';
 import { updateActionButton, updateArrows, updateBackButton } from './ui.js';
 import { updateOverlayVideo } from './overlay.js';
 import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
 import { endingTexts } from './text-content.js';
-import { preloadMedia } from './preloader.js';
 
 const PRELOAD_IMAGE_SECONDS = 0.5;
 let endingContentVisible = false;
@@ -28,7 +26,7 @@ function showEndingContent() {
   const videoPath = state.currentVideoElement.src;
   const videoKey = videoPath.split('/').pop().replace('.mp4', '').replace(/-/g, '').toLowerCase();
 
-  endingImage.src = `Images/${getImageNameFromIndex(state.currentVideo, state.isReversed, state.isSpecial)}.png?t=${Date.now()}`;
+  endingImage.src = `Images/${getImageName(videoKey)}.png?t=${Date.now()}`;
   endingImage.onload = () => {
     endingImage.style.opacity = '1';
     state.currentVideoElement.style.opacity = '0.3';
@@ -69,10 +67,10 @@ function hideEndingContent() {
   endingContentVisible = false;
 }
 
-function getImageNameFromIndex(index, reversed, special) {
-  if (reversed) return `VideoReversed${index}`;
-  if (special) return `Video${index}-Special`;
-  return `Video${index}`;
+function getImageName(videoKey) {
+  if (state.isReversed) return `VideoReversed${state.currentVideo}`;
+  if (state.isSpecial) return `Video${state.currentVideo}-Special`;
+  return `Video${state.currentVideo}`;
 }
 
 function getTextKey(videoKey) {
@@ -81,14 +79,16 @@ function getTextKey(videoKey) {
   return `video${state.currentVideo}`;
 }
 
-export async function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
+function showLoadingBlur() {
+  document.getElementById('loading-blur').style.opacity = '1';
+}
+
+function hideLoadingBlur() {
+  document.getElementById('loading-blur').style.opacity = '0';
+}
+
+export function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
   const newSrc = getVideoSrc(index, reversed, special);
-  const newImage = `Images/${getImageNameFromIndex(index, reversed, special)}.png`;
-  const overlaySrc = getOverlayVideoSrc(index);
-
-  // Précharge
-  await preloadMedia(newSrc, newImage, overlaySrc);
-
   state.nextVideoElement.src = newSrc;
   state.lastVideoSrc = newSrc;
 
@@ -97,6 +97,7 @@ export async function loadAndPlayVideo(index, reversed = false, special = false,
     endingImage.src = '';
   }
 
+  showLoadingBlur();
   state.nextVideoElement.style.opacity = '1';
   state.nextVideoElement.load();
 
@@ -105,6 +106,7 @@ export async function loadAndPlayVideo(index, reversed = false, special = false,
 
     state.nextVideoElement.onplay = () => {
       setupEndingImageOverlay();
+      hideLoadingBlur();
     };
 
     state.nextVideoElement.onpause = () => {
@@ -143,8 +145,17 @@ export async function loadAndPlayVideo(index, reversed = false, special = false,
 }
 
 function updateUIElements() {
-  updateArrows();
-  updateActionButton();
-  updateBackButton();
-  updateOverlayVideo();
+  if (state.currentVideo === 1 && !state.isReversed && !state.isSpecial) {
+    setTimeout(() => {
+      updateArrows();
+      updateActionButton();
+      updateBackButton();
+      updateOverlayVideo();
+    }, 5800);
+  } else {
+    updateArrows();
+    updateActionButton();
+    updateBackButton();
+    updateOverlayVideo();
+  }
 }

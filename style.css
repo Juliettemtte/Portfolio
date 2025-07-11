@@ -192,3 +192,19 @@ body {
 #back-button:hover {
 	background: rgba(255, 255, 255, 0.3);
 }
+
+/* === Blur Layer === */
+#loading-blur {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	background: rgba(0, 0, 0, 0.2);
+	z-index: 9;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
