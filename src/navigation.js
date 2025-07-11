@@ -3,8 +3,10 @@ import { getVideoSrc } from './utils.js';
 import { updateActionButton, updateArrows, updateBackButton } from './ui.js';
 import { updateOverlayVideo } from './overlay.js';
 import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
+import { endingTexts } from './text-content.js';
 
-const PRELOAD_IMAGE_SECONDS = 0.1;
+const PRELOAD_IMAGE_SECONDS = 0.5;
+let endingContentVisible = false;
 
 function setupEndingImageOverlay() {
   state.currentVideoElement.ontimeupdate = (e) => {
@@ -12,14 +14,71 @@ function setupEndingImageOverlay() {
     if (!video.duration) return;
     const timeLeft = video.duration - video.currentTime;
 
-    if (timeLeft <= PRELOAD_IMAGE_SECONDS) {
-      showEndingImage();
-      video.style.opacity = '0.3';
-    } else {
-      endingImage.style.opacity = '0';
-      video.style.opacity = '1';
+    if (timeLeft <= PRELOAD_IMAGE_SECONDS && !endingContentVisible) {
+      showEndingContent();
+      endingContentVisible = true;
     }
   };
+}
+
+function showEndingContent() {
+  const videoPath = state.currentVideoElement.src;
+  const videoKey = videoPath.split('/').pop().replace('.mp4', '').replace(/-/g, '').toLowerCase();
+
+  endingImage.src = `Images/${getImageName(videoKey)}.png?t=${Date.now()}`;
+  endingImage.onload = () => {
+    endingImage.style.opacity = '1';
+    state.currentVideoElement.style.opacity = '0.3';
+    showEndingText(videoKey);
+  };
+}
+
+function showEndingText(videoKey) {
+  const textContainer = document.getElementById('ending-text-container');
+  const titleElement = document.getElementById('ending-title');
+  const paragraphsContainer = document.getElementById('ending-paragraphs');
+
+  const textContent = endingTexts[getTextKey(videoKey)];
+
+  if (textContent) {
+    titleElement.textContent = textContent.title || '';
+    paragraphsContainer.innerHTML = '';
+
+    if (textContent.paragraphs) {
+      textContent.paragraphs.forEach(text => {
+        const p = document.createElement('p');
+        p.className = 'ending-paragraph';
+        p.innerHTML = text.replace(/^ {4}/, '&emsp;');
+        paragraphsContainer.appendChild(p);
+      });
+    }
+
+    textContainer.style.display = 'block';
+    textContainer.style.opacity = '1';
+  } else {
+    textContainer.style.display = 'none';
+  }
+}
+
+function hideEndingContent() {
+  endingImage.style.opacity = '0';
+  document.getElementById('ending-text-container').style.opacity = '0';
+  endingContentVisible = false;
+}
+
+function getImageName(videoKey) {
+  if (state.isReversed) return `VideoReversed${state.currentVideo}`;
+  if (state.isSpecial) {
+    const specialOffset = state.lastDirection === 'left' ? 4 : 5;
+    return `Video${state.currentVideo - specialOffset}-Special`;
+  }
+  return `Video${state.currentVideo}`;
+}
+
+function getTextKey(videoKey) {
+  if (state.isReversed) return `videoreversed${state.currentVideo}`;
+  if (state.isSpecial) return `videospecial${state.currentVideo}`;
+  return `video${state.currentVideo}`;
 }
 
 export function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
@@ -27,15 +86,36 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
   state.nextVideoElement.src = newSrc;
   state.lastVideoSrc = newSrc;
 
-  endingImage.style.opacity = '0';
-  endingImage.src = '';
+  if (!resumePaused || (!reversed && !special)) {
+    hideEndingContent();
+    endingImage.src = '';
+  }
+
   state.nextVideoElement.style.opacity = '1';
   state.nextVideoElement.load();
 
   state.nextVideoElement.onloadeddata = () => {
-    if (resumeTime !== null) {
-      state.nextVideoElement.currentTime = resumeTime;
+    if (resumeTime !== null) state.nextVideoElement.currentTime = resumeTime;
+
+    state.nextVideoElement.onplay = () => {
+      setupEndingImageOverlay();
+    };
+
+    state.nextVideoElement.onpause = () => {
+      const nearEnd = state.nextVideoElement.duration &&
+        state.nextVideoElement.currentTime >= state.nextVideoElement.duration - PRELOAD_IMAGE_SECONDS;
+      if (nearEnd) {
+        showEndingContent();
+      }
+    };
+
+    const isNearEnd = state.nextVideoElement.duration &&
+      state.nextVideoElement.currentTime >= state.nextVideoElement.duration - PRELOAD_IMAGE_SECONDS;
+
+    if ((resumePaused || reversed || special) && isNearEnd) {
+      showEndingContent();
     }
+
     if (resumePaused) {
       state.nextVideoElement.pause();
     } else {
@@ -52,63 +132,19 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     state.isSpecial = special;
     state.currentVideo = index;
 
-    setupEndingImageOverlay();
-
-    if (state.currentVideo === 1 && !state.isReversed && !state.isSpecial) {
-      setTimeout(() => {
-        updateArrows();
-        updateActionButton();
-        updateBackButton();
-        updateOverlayVideo();
-      }, 5800);
-    } else {
-      updateArrows();
-      updateActionButton();
-      updateBackButton();
-      updateOverlayVideo();
-    }
-
-    state.currentVideoElement.onpause = () => {
-      updateActionButton();
-      updateBackButton();
-      updateOverlayVideo();
-    };
-
-    state.currentVideoElement.onplay = () => {
-      actionButton.hidden = true;
-      backButton.hidden = true;
-      overlayVideo.pause();
-      overlayVideo.src = '';
-      overlayContainer.hidden = true;
-
-      state.currentVideoElement.style.opacity = '1';
-      endingImage.style.opacity = '0';
-    };
+    updateUIElements();
 
     state.currentVideoElement.onended = () => {
-      updateArrows();
-      updateActionButton();
-      updateBackButton();
-      updateOverlayVideo();
-
-      state.currentVideoElement.style.opacity = '0';
+      showEndingContent();
+      updateUIElements();
     };
   };
 }
 
-function showEndingImage() {
-  let imageName;
-  
-  if (state.isSpecial) {
-    const specialOffset = state.lastDirection === 'left' ? 4 : 5;
-    imageName = `Video${state.currentVideo - specialOffset}-Special`;
-  } else if (state.isReversed) {
-    imageName = `VideoReversed${state.currentVideo}`;
-  } else {
-    imageName = `Video${state.currentVideo}`;
-  }
-  
-  endingImage.src = `Images/${imageName}.png`;
-  endingImage.style.opacity = '1';
-  state.currentVideoElement.style.opacity = '0.3';
+
+function updateUIElements() {
+  updateArrows();
+  updateActionButton();
+  updateBackButton();
+  updateOverlayVideo();
 }
