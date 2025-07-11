@@ -79,14 +79,6 @@ function getTextKey(videoKey) {
   return `video${state.currentVideo}`;
 }
 
-function showLoadingBlur() {
-  document.getElementById('loading-blur').style.opacity = '1';
-}
-
-function hideLoadingBlur() {
-  document.getElementById('loading-blur').style.opacity = '0';
-}
-
 export function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
   const newSrc = getVideoSrc(index, reversed, special);
   state.nextVideoElement.src = newSrc;
@@ -97,7 +89,6 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     endingImage.src = '';
   }
 
-  showLoadingBlur();
   state.nextVideoElement.style.opacity = '1';
   state.nextVideoElement.load();
 
@@ -106,7 +97,6 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
 
     state.nextVideoElement.onplay = () => {
       setupEndingImageOverlay();
-      hideLoadingBlur();
     };
 
     state.nextVideoElement.onpause = () => {
@@ -143,6 +133,7 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     };
   };
 }
+
 
 function updateUIElements() {
   if (state.currentVideo === 1 && !state.isReversed && !state.isSpecial) {
