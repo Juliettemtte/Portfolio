@@ -97,12 +97,11 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
 }
 
 function showEndingImage() {
-  const match = state.lastVideoSrc.match(/Videos\/([^\.]+)\.mp4$/);
+  const match = state.lastVideoSrc.match(/Videos\/(video)(\d+)(?:-\w+)?\.mp4$/);
   if (match) {
-    const imageName = match[1];
-    if (!endingImage.src.includes(imageName)) {
-      endingImage.src = `Images/${imageName}.png`;
-    }
+    const baseName = match[1];
+    const number = match[2];
+    endingImage.src = `Images/${baseName}${number}.png`;
     endingImage.style.opacity = '1';
     state.currentVideoElement.style.opacity = '0.3';
   }
