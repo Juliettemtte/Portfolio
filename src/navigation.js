@@ -2,20 +2,48 @@ import { state, swapVideoElements } from './state.js';
 import { getVideoSrc } from './utils.js';
 import { updateActionButton, updateArrows, updateBackButton } from './ui.js';
 import { updateOverlayVideo } from './overlay.js';
-import { actionButton, backButton, overlayVideo, overlayContainer } from './elements.js';
+import { actionButton, backButton, overlayVideo, overlayContainer, endingImage } from './elements.js';
+
+const PRELOAD_IMAGE_SECONDS = 0.1;
+
+function setupEndingImageOverlay() {
+  state.currentVideoElement.ontimeupdate = (e) => {
+    const video = e.target;
+    if (!video.duration) return;
+    const timeLeft = video.duration - video.currentTime;
+
+    if (timeLeft <= PRELOAD_IMAGE_SECONDS) {
+      showEndingImage();
+      video.style.opacity = '0.3';
+    } else {
+      endingImage.style.opacity = '0';
+      video.style.opacity = '1';
+    }
+  };
+}
 
 export function loadAndPlayVideo(index, reversed = false, special = false, resumeTime = null, resumePaused = false) {
   const newSrc = getVideoSrc(index, reversed, special);
   state.nextVideoElement.src = newSrc;
+  state.lastVideoSrc = newSrc;
+
+  endingImage.style.opacity = '0';
+  state.nextVideoElement.style.opacity = '1';
+
   state.nextVideoElement.load();
 
   state.nextVideoElement.onloadeddata = () => {
-    if (resumeTime !== null) state.nextVideoElement.currentTime = resumeTime;
-    resumePaused ? state.nextVideoElement.pause() : state.nextVideoElement.play();
+    if (resumeTime !== null) {
+      state.nextVideoElement.currentTime = resumeTime;
+    }
+    if (resumePaused) {
+      state.nextVideoElement.pause();
+    } else {
+      state.nextVideoElement.play();
+    }
 
     state.currentVideoElement.classList.remove('active');
     state.nextVideoElement.classList.add('active');
-
     state.currentVideoElement.pause();
 
     swapVideoElements();
@@ -23,6 +51,8 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
     state.isReversed = reversed;
     state.isSpecial = special;
     state.currentVideo = index;
+
+    setupEndingImageOverlay();
 
     if (state.currentVideo === 1 && !state.isReversed && !state.isSpecial) {
       setTimeout(() => {
@@ -50,6 +80,29 @@ export function loadAndPlayVideo(index, reversed = false, special = false, resum
       overlayVideo.pause();
       overlayVideo.src = '';
       overlayContainer.hidden = true;
+
+      state.currentVideoElement.style.opacity = '1';
+      endingImage.style.opacity = '0';
+    };
+
+    state.currentVideoElement.onended = () => {
+      updateArrows();
+      updateActionButton();
+      updateBackButton();
+      updateOverlayVideo();
+
+      state.currentVideoElement.style.opacity = '0';
     };
   };
+}
+
+function showEndingImage() {
+  const match = state.lastVideoSrc.match(/Videos\/([^\.]+)\.mp4$/);
+  if (match) {
+    const imageName = match[1];
+    endingImage.src = `Images/${imageName}.png`;
+
+    endingImage.style.opacity = '1';
+    state.currentVideoElement.style.opacity = '0';
+  }
 }

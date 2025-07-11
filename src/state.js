@@ -3,6 +3,7 @@ export const state = {
   nextVideoElement: null,
   currentVideo: 1,
   totalVideos: 7,
+  lastVideoSrc: '',
   isReversed: false,
   isSpecial: false,
   previousVideoData: null,

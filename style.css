@@ -18,6 +18,14 @@ body {
 	background: black;
 }
 
+/* === Positioning Wrapper for stacking === */
+.relative-wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
 /* === Main Videos === */
 .video {
 	position: absolute;
@@ -26,13 +34,29 @@ body {
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
-	background: black;
+	background: transparent;
 	z-index: 0;
+	opacity: 0;
+	transition: opacity 0.2s ease;
 }
 
 .video.active {
-	opacity: 1;
 	z-index: 1;
+	opacity: 1;
+}
+
+/* === Ending Image === */
+#video-ending-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity 0.02s ease-in-out;
 }
 
 /* === Overlay Video === */
@@ -70,7 +94,7 @@ body {
 	border-radius: 100%;
 	padding: 0.75rem;
 	cursor: pointer;
-	z-index: 2;
+	z-index: 3;
 	transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -99,7 +123,7 @@ body {
 	border: 2px solid white;
 	border-radius: 6px;
 	cursor: pointer;
-	z-index: 2;
+	z-index: 3;
 	transition: background-color 0.3s ease;
 }
 
@@ -120,7 +144,7 @@ body {
 	padding: 10px 20px;
 	font-size: 1rem;
 	cursor: pointer;
-	z-index: 2;
+	z-index: 3;
 	transition: background-color 0.3s;
 }
 

@@ -6,3 +6,4 @@ export const actionButton = document.getElementById('action-button');
 export const backButton = document.getElementById('back-button');
 export const overlayContainer = document.getElementById('overlay-video-container');
 export const overlayVideo = document.getElementById('overlay-video');
+export const endingImage = document.getElementById('video-ending-image');

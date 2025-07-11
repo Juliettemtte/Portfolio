@@ -1,8 +1,6 @@
 import { state } from './state.js';
-import { leftArrow, rightArrow, actionButton, backButton, overlayVideo, overlayContainer } from './elements.js';
+import { leftArrow, rightArrow, actionButton, backButton } from './elements.js';
 import { loadAndPlayVideo } from './navigation.js';
-import { updateArrows, updateActionButton, updateBackButton } from './ui.js';
-import { updateOverlayVideo } from './overlay.js';
 
 leftArrow.addEventListener('click', () => {
   if (state.isSpecial) return;
@@ -36,10 +34,8 @@ actionButton.addEventListener('click', () => {
       paused: state.currentVideoElement.paused
     };
 
-    // Choisir +4 ou +5 selon la dernière direction
     const offset = state.lastDirection === 'left' ? 4 : 5;
     const specialVideo = state.currentVideo + offset;
-
     loadAndPlayVideo(specialVideo, false, true);
   } else {
     const match = state.currentVideoElement.src.match(/(\d+)\.mp4$/);
@@ -50,7 +46,6 @@ actionButton.addEventListener('click', () => {
   }
 });
 
-
 backButton.addEventListener('click', () => {
   if (!state.previousVideoData) return;
 
@@ -58,12 +53,3 @@ backButton.addEventListener('click', () => {
   state.previousVideoData = null;
   loadAndPlayVideo(index, reversed, special, time, paused);
 });
-
-export function setupEvents() {
-  state.currentVideoElement.addEventListener('ended', () => {
-    updateArrows();
-    updateActionButton();
-    updateBackButton();
-    updateOverlayVideo();
-  });
-}
