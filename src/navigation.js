@@ -27,18 +27,11 @@ function showEndingContent() {
   const videoKey = videoPath.split('/').pop().replace('.mp4', '').replace(/-/g, '').toLowerCase();
 
   endingImage.src = `Images/${getImageName(videoKey)}.png?t=${Date.now()}`;
-  if (endingImage.complete) {
-  endingImage.style.opacity = '1';
-  state.currentVideoElement.style.opacity = '0.3';
-  showEndingText(videoKey);
-} else {
   endingImage.onload = () => {
     endingImage.style.opacity = '1';
     state.currentVideoElement.style.opacity = '0.3';
     showEndingText(videoKey);
   };
-}
-
 }
 
 function showEndingText(videoKey) {
@@ -82,7 +75,7 @@ function getImageName(videoKey) {
 
 function getTextKey(videoKey) {
   if (state.isReversed) return `videoreversed${state.currentVideo}`;
-  if (state.isSpecial) return `videospecial${state.currentVideo}`;
+  if (state.isSpecial) return `videospecial${state.currentVideo}-Special`;
   return `video${state.currentVideo}`;
 }
 

@@ -54,7 +54,7 @@ body {
 	height: 100%;
 	object-fit: cover;
 	pointer-events: none;
-	z-index: 1;
+	z-index: 2;
 	opacity: 0;
 	transition: opacity 0.02s ease-in-out;
 }
@@ -70,7 +70,7 @@ body {
   text-align: center;
   opacity: 0;
   transition: opacity 0.5s ease;
-  z-index: 2;
+  z-index: 3;
   display: none;
 }
 
@@ -97,7 +97,7 @@ body {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* === Overlay Video === */
